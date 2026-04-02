@@ -1,0 +1,51 @@
+generator client {
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "debian-openssl-3.0.x"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Gender {
+  Male
+  Female
+}
+
+model Cafe {
+  id          String         @id @default(uuid())
+  name        String         @db.VarChar(10)
+  description String         @db.VarChar(256)
+  logo        String?
+  location    String
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
+  employees   CafeEmployee[]
+
+  @@map("cafes")
+}
+
+model Employee {
+  id           String        @id
+  name         String        @db.VarChar(10)
+  emailAddress String        @unique @map("email_address")
+  phoneNumber  String        @db.Char(8) @map("phone_number")
+  gender       Gender
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+  cafe         CafeEmployee?
+
+  @@map("employees")
+}
+
+model CafeEmployee {
+  employeeId String   @id @map("employee_id")
+  cafeId     String   @map("cafe_id")
+  startDate  DateTime @default(now()) @map("start_date")
+
+  employee Employee @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+  cafe     Cafe     @relation(fields: [cafeId], references: [id], onDelete: Restrict)
+
+  @@map("cafe_employees")
+}
