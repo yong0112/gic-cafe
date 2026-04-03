@@ -15,3 +15,8 @@ body {
 #root {
   min-height: 100vh;
 }
+
+/* Fix AG Grid autoHeight showing extra empty rows */
+.ag-center-cols-viewport {
+  min-height: unset !important;
+}

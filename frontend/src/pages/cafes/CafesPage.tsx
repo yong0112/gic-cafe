@@ -72,6 +72,7 @@ export default function CafesPage() {
 
       <div className={styles.grid}>
         <AgGridReact
+          key={location}
           rowData={cafes}
           columnDefs={columnDefs}
           context={context}

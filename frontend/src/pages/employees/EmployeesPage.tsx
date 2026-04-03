@@ -68,6 +68,7 @@ export default function EmployeesPage() {
 
       <div className={styles.grid}>
         <AgGridReact
+          key={cafeFilter ?? 'all'}
           rowData={employees}
           columnDefs={columnDefs}
           context={context}
