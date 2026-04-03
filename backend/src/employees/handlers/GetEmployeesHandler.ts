@@ -18,7 +18,7 @@ export class GetEmployeesHandler implements IRequestHandler<GetEmployeesQuery, E
   constructor(private readonly employeeRepository: EmployeeRepository) {}
 
   async handle(query: GetEmployeesQuery): Promise<EmployeeResponse[]> {
-    const employees = await this.employeeRepository.findAll(query.cafe);
+    const employees = await this.employeeRepository.findAll(query.cafeId);
 
     const result = employees.map((emp) => ({
       id: emp.id,

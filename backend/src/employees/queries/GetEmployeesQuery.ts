@@ -1,3 +1,3 @@
 export class GetEmployeesQuery {
-  constructor(public readonly cafe?: string) {}
+  constructor(public readonly cafeId?: string) {}
 }

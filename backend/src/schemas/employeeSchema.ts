@@ -7,7 +7,7 @@ export const createEmployeeSchema = z.object({
     .string()
     .regex(/^[89]\d{7}$/, 'Phone number must start with 8 or 9 and be 8 digits'),
   gender: z.enum(['Male', 'Female'], { message: 'Gender must be Male or Female' }),
-  cafeId: z.string().uuid('Invalid café ID').optional(),
+  cafeId: z.string().uuid('Invalid café ID').optional().nullable(),
 });
 
 export const updateEmployeeSchema = createEmployeeSchema.partial().extend({

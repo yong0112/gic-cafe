@@ -127,9 +127,13 @@ export default function EmployeeFormPage() {
             control={control}
             render={({ field }) => (
               <Select
-                {...field}
+                id={field.name}
+                ref={field.ref}
+                value={field.value || undefined}
                 placeholder="Select a café"
                 allowClear
+                onBlur={field.onBlur}
+                onChange={(val) => field.onChange(val ?? '')}
                 onClear={() => field.onChange('')}
                 options={cafes.map((c) => ({ value: c.id, label: c.name }))}
               />

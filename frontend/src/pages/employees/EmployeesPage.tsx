@@ -6,6 +6,7 @@ import { AgGridReact } from 'ag-grid-react';
 import { AllCommunityModule, ModuleRegistry } from 'ag-grid-community';
 import type { ColDef } from 'ag-grid-community';
 import { useEmployees, useDeleteEmployee } from '@/hooks/useEmployees';
+import { useCafes } from '@/hooks/useCafes';
 import type { Employee } from '@/types';
 import ActionButtonsRenderer from '@/components/cellRenderers/ActionButtonsRenderer';
 import styles from './EmployeesPage.module.css';
@@ -18,7 +19,10 @@ export default function EmployeesPage() {
   const cafeFilter = searchParams.get('cafe') ?? undefined;
 
   const { data: employees = [], isLoading } = useEmployees(cafeFilter);
+  const { data: cafes = [] } = useCafes();
   const { mutate: deleteEmployee } = useDeleteEmployee();
+
+  const cafeTitle = cafeFilter ? (cafes.find((c) => c.id === cafeFilter)?.name ?? cafeFilter) : null;
 
   const handleDelete = useCallback(
     (id: string) => {
@@ -55,7 +59,7 @@ export default function EmployeesPage() {
     <div>
       <div className={styles.header}>
         <h1 className={styles.title}>
-          {cafeFilter ? `Employees — ${cafeFilter}` : 'Employees'}
+          {cafeTitle ? `Employees — ${cafeTitle}` : 'Employees'}
         </h1>
         <Button type="primary" icon={<PlusOutlined />} onClick={() => navigate('/employees/new')}>
           Add New Employee

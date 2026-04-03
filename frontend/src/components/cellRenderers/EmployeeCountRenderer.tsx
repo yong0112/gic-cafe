@@ -6,7 +6,7 @@ export default function EmployeeCountRenderer({ value, data }: CustomCellRendere
 
   return (
     <button
-      onClick={() => navigate(`/employees?cafe=${encodeURIComponent(data.name)}`)}
+      onClick={() => navigate(`/employees?cafe=${encodeURIComponent(data.id)}`)}
       style={{
         background: 'none',
         border: 'none',

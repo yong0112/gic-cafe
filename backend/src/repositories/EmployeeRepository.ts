@@ -10,10 +10,10 @@ type EmployeeWithCafe = Employee & {
 export class EmployeeRepository {
   constructor(private readonly prisma: PrismaClient) {}
 
-  async findAll(cafeName?: string): Promise<EmployeeWithCafe[]> {
+  async findAll(cafeId?: string): Promise<EmployeeWithCafe[]> {
     return this.prisma.employee.findMany({
-      where: cafeName
-        ? { cafe: { cafe: { name: { equals: cafeName, mode: 'insensitive' } } } }
+      where: cafeId
+        ? { cafe: { cafeId } }
         : undefined,
       include: {
         cafe: {
