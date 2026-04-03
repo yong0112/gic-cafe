@@ -16,6 +16,8 @@ RUN npm run build
 # ─── Stage 2: Production ──────────────────────────────────────────────────────
 FROM node:22-alpine AS runner
 
+RUN apk add --no-cache openssl
+
 WORKDIR /app
 
 COPY package*.json ./
@@ -30,4 +32,4 @@ RUN mkdir -p uploads
 
 EXPOSE 3000
 
-CMD ["sh", "-c", "npx prisma migrate deploy && node dist/index.js"]
+CMD ["sh", "-c", "npx prisma migrate deploy && npx ts-node -r tsconfig-paths/register prisma/seed.ts && node dist/index.js"]

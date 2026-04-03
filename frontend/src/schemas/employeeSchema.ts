@@ -1,7 +1,9 @@
 import { z } from 'zod';
 
 export const employeeSchema = z.object({
-  name: z.preprocess((v) => (typeof v === 'string' ? v.trim() : v), z.string().min(6, 'Minimum 6 characters').max(10, 'Maximum 10 characters')),
+  name: z.string()
+    .refine((s) => s.trim().length >= 6, 'Minimum 6 characters')
+    .refine((s) => s.trim().length <= 10, 'Maximum 10 characters'),
   emailAddress: z.string().email('Invalid email address'),
   phoneNumber: z
     .string()
