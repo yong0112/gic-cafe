@@ -1,7 +1,7 @@
 import { z } from 'zod';
 
 export const createEmployeeSchema = z.object({
-  name: z.string().min(6, 'Minimum 6 characters').max(10, 'Maximum 10 characters'),
+  name: z.preprocess((v) => (typeof v === 'string' ? v.trim() : v), z.string().min(6, 'Minimum 6 characters').max(10, 'Maximum 10 characters')),
   emailAddress: z.string().email('Invalid email address'),
   phoneNumber: z
     .string()
