@@ -42,7 +42,9 @@ export class CafeController {
         });
         return;
       }
-      const logo = req.file ? `uploads/${req.file.filename}` : undefined;
+      const logo = req.file
+        ? `uploads/${req.file.filename}`
+        : req.body.removeLogo === '1' ? null : undefined;
       const { id, name, description, location } = parsed.data;
       const data = await this.mediator.send(new UpdateCafeCommand(id, name, description, location, logo));
       res.json({ success: true, data });

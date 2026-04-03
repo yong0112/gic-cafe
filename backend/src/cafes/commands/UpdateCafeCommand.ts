@@ -4,6 +4,6 @@ export class UpdateCafeCommand {
     public readonly name?: string,
     public readonly description?: string,
     public readonly location?: string,
-    public readonly logo?: string,
+    public readonly logo?: string | null,
   ) {}
 }

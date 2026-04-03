@@ -31,6 +31,9 @@ export const useDeleteEmployee = () => {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: deleteEmployee,
-    onSuccess: () => qc.invalidateQueries({ queryKey: ['employees'] }),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['employees'] });
+      qc.invalidateQueries({ queryKey: ['cafes'] });
+    },
   });
 };

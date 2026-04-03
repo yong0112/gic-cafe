@@ -9,11 +9,12 @@ export class UpdateCafeHandler implements IRequestHandler<UpdateCafeCommand, Caf
   constructor(private readonly cafeRepository: CafeRepository) {}
 
   async handle(command: UpdateCafeCommand): Promise<Cafe> {
-    const { id, ...data } = command;
+    const { id, logo, ...fields } = command;
     const existing = await this.cafeRepository.findById(id);
     if (!existing) {
       throw Object.assign(new Error('Café not found'), { statusCode: 404 });
     }
+    const data = { ...fields, logo: logo !== undefined ? logo : existing.logo };
     return this.cafeRepository.update(id, data);
   }
 }

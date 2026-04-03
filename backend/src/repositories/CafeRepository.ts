@@ -22,7 +22,7 @@ export class CafeRepository {
     return this.prisma.cafe.create({ data });
   }
 
-  async update(id: string, data: Partial<UpdateCafeInput & { logo?: string }>): Promise<Cafe> {
+  async update(id: string, data: Partial<UpdateCafeInput & { logo?: string | null }>): Promise<Cafe> {
     return this.prisma.cafe.update({ where: { id }, data });
   }
 
