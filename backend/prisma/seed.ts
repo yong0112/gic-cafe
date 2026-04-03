@@ -1,55 +1,71 @@
+/// <reference types="node" />
 import { PrismaClient, Gender } from '@prisma/client';
 
 const prisma = new PrismaClient();
+
+// Proper UUID v4 format for seeded cafés
+const CAFE_IDS = {
+  theGrind: 'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11',
+  brewAndCo: 'b1eebc99-9c0b-4ef8-bb6d-6bb9bd380a22',
+  kopiKaki:  'c2eebc99-9c0b-4ef8-bb6d-6bb9bd380a33',
+};
 
 async function main() {
   console.log('Seeding database...');
 
   // ─── Cafes ────────────────────────────────────────────────────────────────
-  const cafe1 = await prisma.cafe.upsert({
-    where: { id: 'a1b2c3d4-0001-0001-0001-000000000001' },
+  await prisma.cafe.upsert({
+    where: { id: CAFE_IDS.theGrind },
     update: {},
     create: {
-      id: 'a1b2c3d4-0001-0001-0001-000000000001',
+      id: CAFE_IDS.theGrind,
       name: 'The Grind',
       description: 'Specialty coffee and artisan pastries in the heart of the city.',
       location: 'CBD',
     },
   });
 
-  const cafe2 = await prisma.cafe.upsert({
-    where: { id: 'a1b2c3d4-0002-0002-0002-000000000002' },
+  await prisma.cafe.upsert({
+    where: { id: CAFE_IDS.brewAndCo },
     update: {},
     create: {
-      id: 'a1b2c3d4-0002-0002-0002-000000000002',
+      id: CAFE_IDS.brewAndCo,
       name: 'Brew & Co',
       description: 'Cosy neighbourhood cafe known for cold brews and waffles.',
       location: 'Tampines',
     },
   });
 
-  const cafe3 = await prisma.cafe.upsert({
-    where: { id: 'a1b2c3d4-0003-0003-0003-000000000003' },
+  await prisma.cafe.upsert({
+    where: { id: CAFE_IDS.kopiKaki },
     update: {},
     create: {
-      id: 'a1b2c3d4-0003-0003-0003-000000000003',
+      id: CAFE_IDS.kopiKaki,
       name: 'Kopi Kaki',
       description: 'Traditional kopi with a modern twist, rooted in local culture.',
       location: 'Jurong',
     },
   });
 
-  console.log('Cafes seeded:', cafe1.name, cafe2.name, cafe3.name);
+  console.log('Cafes seeded:', Object.keys(CAFE_IDS).join(', '));
 
   // ─── Employees ────────────────────────────────────────────────────────────
-  const employees = [
+  const employees: Array<{
+    id: string;
+    name: string;
+    emailAddress: string;
+    phoneNumber: string;
+    gender: Gender;
+    cafeId: string | null;
+    startDate: Date | null;
+  }> = [
     {
       id: 'UIABCD001',
       name: 'Alice Tan',
       emailAddress: 'alice.tan@example.com',
       phoneNumber: '91234567',
       gender: Gender.Female,
-      cafeId: cafe1.id,
+      cafeId: CAFE_IDS.theGrind,
       startDate: new Date('2023-01-15'),
     },
     {
@@ -58,7 +74,7 @@ async function main() {
       emailAddress: 'bob.lim@example.com',
       phoneNumber: '81234567',
       gender: Gender.Male,
-      cafeId: cafe1.id,
+      cafeId: CAFE_IDS.theGrind,
       startDate: new Date('2023-06-01'),
     },
     {
@@ -67,7 +83,7 @@ async function main() {
       emailAddress: 'carol.ng@example.com',
       phoneNumber: '92345678',
       gender: Gender.Female,
-      cafeId: cafe1.id,
+      cafeId: CAFE_IDS.theGrind,
       startDate: new Date('2024-03-10'),
     },
     {
@@ -76,7 +92,7 @@ async function main() {
       emailAddress: 'david.koh@example.com',
       phoneNumber: '83456789',
       gender: Gender.Male,
-      cafeId: cafe2.id,
+      cafeId: CAFE_IDS.brewAndCo,
       startDate: new Date('2022-11-20'),
     },
     {
@@ -85,7 +101,7 @@ async function main() {
       emailAddress: 'eva.wong@example.com',
       phoneNumber: '94567890',
       gender: Gender.Female,
-      cafeId: cafe2.id,
+      cafeId: CAFE_IDS.brewAndCo,
       startDate: new Date('2024-07-01'),
     },
     {
@@ -94,7 +110,7 @@ async function main() {
       emailAddress: 'frank.ong@example.com',
       phoneNumber: '85678901',
       gender: Gender.Male,
-      cafeId: cafe3.id,
+      cafeId: CAFE_IDS.kopiKaki,
       startDate: new Date('2023-09-15'),
     },
     // Unassigned employees
@@ -131,11 +147,7 @@ async function main() {
       await prisma.cafeEmployee.upsert({
         where: { employeeId: employeeData.id },
         update: {},
-        create: {
-          employeeId: employeeData.id,
-          cafeId,
-          startDate,
-        },
+        create: { employeeId: employeeData.id, cafeId, startDate },
       });
     }
   }

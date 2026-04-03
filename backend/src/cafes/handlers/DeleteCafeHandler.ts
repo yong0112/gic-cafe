@@ -1,7 +1,6 @@
 import { injectable } from 'tsyringe';
 import { IRequestHandler } from '@/mediator/mediator';
 import { CafeRepository } from '@/repositories/CafeRepository';
-import { EmployeeRepository } from '@/repositories/EmployeeRepository';
 import { DeleteCafeCommand } from '@/cafes/commands/DeleteCafeCommand';
 import { PrismaClient } from '@prisma/client';
 
@@ -9,7 +8,6 @@ import { PrismaClient } from '@prisma/client';
 export class DeleteCafeHandler implements IRequestHandler<DeleteCafeCommand, void> {
   constructor(
     private readonly cafeRepository: CafeRepository,
-    private readonly employeeRepository: EmployeeRepository,
     private readonly prisma: PrismaClient,
   ) {}
 
@@ -22,10 +20,12 @@ export class DeleteCafeHandler implements IRequestHandler<DeleteCafeCommand, voi
     const employeeIds = await this.cafeRepository.findEmployeeIds(command.id);
 
     await this.prisma.$transaction(async (tx) => {
-      await tx.cafe.delete({ where: { id: command.id } });
+      // 1. Delete employees first — cascades to remove CafeEmployee rows
       if (employeeIds.length > 0) {
         await tx.employee.deleteMany({ where: { id: { in: employeeIds } } });
       }
+      // 2. Now café has no junction rows — Restrict constraint is satisfied
+      await tx.cafe.delete({ where: { id: command.id } });
     });
   }
 }
