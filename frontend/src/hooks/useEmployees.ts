@@ -20,7 +20,10 @@ export const useUpdateEmployee = () => {
   return useMutation({
     mutationFn: ({ id, data }: { id: string; data: Record<string, unknown> }) =>
       updateEmployee(id, data),
-    onSuccess: () => qc.invalidateQueries({ queryKey: ['employees'] }),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['employees'] });
+      qc.invalidateQueries({ queryKey: ['cafes'] });
+    },
   });
 };
 

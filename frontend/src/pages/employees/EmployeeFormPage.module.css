@@ -1,0 +1,21 @@
+.header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.title {
+  font-size: 1.4rem;
+  font-weight: 700;
+}
+
+.form {
+  max-width: 480px;
+}
+
+.actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 8px;
+}
