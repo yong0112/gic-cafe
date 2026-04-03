@@ -48,6 +48,15 @@ app.get('/health', (_req, res) => {
   res.json({ status: 'ok' });
 });
 
+// ─── Serve frontend in production ─────────────────────────────────────────────
+if (config.NODE_ENV === 'production') {
+  const frontendPath = path.join(process.cwd(), 'public');
+  app.use(express.static(frontendPath));
+  app.get('*', (_req, res) => {
+    res.sendFile(path.join(frontendPath, 'index.html'));
+  });
+}
+
 // ─── Error handler (must be last) ─────────────────────────────────────────────
 app.use(errorHandler);
 
