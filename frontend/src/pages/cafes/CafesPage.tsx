@@ -77,6 +77,7 @@ export default function CafesPage() {
           context={context}
           loading={isLoading}
           rowHeight={52}
+          domLayout="autoHeight"
           defaultColDef={{ suppressMovable: true }}
         />
       </div>

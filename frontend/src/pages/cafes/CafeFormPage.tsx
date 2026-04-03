@@ -3,7 +3,7 @@ import { useNavigate, useParams, useBlocker } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Button, Form, Upload, message, Modal } from 'antd';
-import { UploadOutlined, ArrowLeftOutlined } from '@ant-design/icons';
+import { UploadOutlined, ArrowLeftOutlined, DeleteOutlined } from '@ant-design/icons';
 import { useCafes, useCreateCafe, useUpdateCafe } from '@/hooks/useCafes';
 import { cafeSchema, type CafeFormValues } from '@/schemas/cafeSchema';
 import AppTextInput from '@/components/AppTextInput';
@@ -21,6 +21,8 @@ export default function CafeFormPage() {
   const { mutate: updateCafe, isPending: isUpdating } = useUpdateCafe();
 
   const [logoFile, setLogoFile] = useState<File | null>(null);
+  const [logoPreview, setLogoPreview] = useState<string | null>(null);
+  const [deleteLogo, setDeleteLogo] = useState(false);
   const [logoError, setLogoError] = useState('');
 
   const {
@@ -62,6 +64,7 @@ export default function CafeFormPage() {
     formData.append('description', values.description);
     formData.append('location', values.location);
     if (logoFile) formData.append('logo', logoFile);
+    if (deleteLogo && !logoFile) formData.append('removeLogo', '1');
 
     if (isEditMode && id) {
       updateCafe(
@@ -100,8 +103,26 @@ export default function CafeFormPage() {
         <AppTextInput name="location" control={control} label="Location" placeholder="e.g. CBD, Tampines" error={errors.location} />
 
         <Form.Item label="Logo (optional)" validateStatus={logoError ? 'error' : ''} help={logoError}>
-          {existing?.logo && !logoFile && (
-            <img src={`/${existing.logo}`} alt="logo" className={styles.preview} />
+          {(logoPreview || (existing?.logo && !deleteLogo)) && (
+            <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 8 }}>
+              <img
+                src={logoPreview ?? `/${existing!.logo}`}
+                alt="logo"
+                className={styles.preview}
+              />
+              <Button
+                size="small"
+                danger
+                icon={<DeleteOutlined />}
+                onClick={() => {
+                  setLogoFile(null);
+                  setLogoPreview(null);
+                  setDeleteLogo(true);
+                }}
+              >
+                Remove
+              </Button>
+            </div>
           )}
           <Upload
             beforeUpload={(file) => {
@@ -111,10 +132,13 @@ export default function CafeFormPage() {
               }
               setLogoError('');
               setLogoFile(file);
+              setLogoPreview(URL.createObjectURL(file));
+              setDeleteLogo(false);
               return false;
             }}
             maxCount={1}
             accept="image/jpeg,image/png,image/gif"
+            showUploadList={false}
           >
             <Button icon={<UploadOutlined />}>Select Logo</Button>
           </Upload>
